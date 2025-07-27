@@ -1,4 +1,4 @@
-# TempMonitorFirebeetle2
+# TempMonitor with Firebeetle2
 
 ## Hardware
 * DFRobot Firebeetle2 (ESP32-E DFR0654)
