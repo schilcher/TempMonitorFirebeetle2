@@ -91,30 +91,6 @@ void setup() {
 
   connectToMQTT();
 
-  // // publish discovery message to Home Assistant for temperature sensor
-  // StaticJsonDocument<256> doc;
-  // doc["name"] = "Basement_Fridge_Temperature";
-  // doc["device_class"] = "temperature";
-  // doc["state_topic"] = mqtt_publish_topic_temp;
-  // doc["unique_id"] = "basementfridge_temp";
-  // doc["value_template"] = "{{ value_json.temperature }}";
-  // doc["unit_of_measurement"] = "F";
-  // char jsonBuffer[256];
-  // serializeJson(doc, jsonBuffer);
-  // mqtt.publish(mqtt_temp_discovery_topic, jsonBuffer);
-
-  // //publish discovery message to Home Assistant for battery sensor
-  // StaticJsonDocument<256> batteryDoc;
-  // batteryDoc["name"] = "Basement_Fridge_Battery";
-  // batteryDoc["device_class"] = "voltage";
-  // batteryDoc["state_topic"] = mqtt_publish_topic_battery;
-  // batteryDoc["unique_id"] = "basementfridge_battery";
-  // batteryDoc["value_template"] = "{{ value_json.voltage }}";
-  // batteryDoc["unit_of_measurement"] = "V";
-  // char batteryJsonBuffer[256];
-  // serializeJson(batteryDoc, batteryJsonBuffer);
-  // mqtt.publish(mqtt_battery_discovery_topic, batteryJsonBuffer);
-
   // publish temperature status
   StaticJsonDocument<128> tempDoc;
   tempDoc["temperature"] = temperature;
@@ -137,9 +113,9 @@ void setup() {
   digitalWrite(LED, HIGH);
 
   // deep sleep for 5 mins
-  Serial.println("Setup complete, going to sleep for 5 mins...");
+  Serial.println("Setup complete, going to sleep for 30 mins...");
   delay(1000);
-  esp_sleep_enable_timer_wakeup(60 * 5 * 1000000); // 5 mins
+  esp_sleep_enable_timer_wakeup(60 * 30 * 1000000); // 30 mins
   esp_deep_sleep_start();
   // Note: The ESP32 will reset after waking up from deep sleep
   // and the setup() function will be called again.
@@ -178,4 +154,35 @@ void connectToMQTT() {
     Serial.println("Successfully connected to MQTT broker!");
   }
 
+}
+
+/*
+* Function to publish MQTT discovery messages for Home Assistant
+* This function only needs to be called once to set up the sensors in Home Assistant
+* After that, the sensors will be automatically discovered by Home Assistant
+*/
+void publishMQTT_Discovery() {
+  // publish discovery message to Home Assistant for temperature sensor
+  StaticJsonDocument<256> doc;
+  doc["name"] = "Basement_Fridge_Temperature";
+  doc["device_class"] = "temperature";
+  doc["state_topic"] = mqtt_publish_topic_temp;
+  doc["unique_id"] = "basementfridge_temp";
+  doc["value_template"] = "{{ value_json.temperature }}";
+  doc["unit_of_measurement"] = "F";
+  char jsonBuffer[256];
+  serializeJson(doc, jsonBuffer);
+  mqtt.publish(mqtt_temp_discovery_topic, jsonBuffer);
+
+  //publish discovery message to Home Assistant for battery sensor
+  StaticJsonDocument<256> batteryDoc;
+  batteryDoc["name"] = "Basement_Fridge_Battery";
+  batteryDoc["device_class"] = "voltage";
+  batteryDoc["state_topic"] = mqtt_publish_topic_battery;
+  batteryDoc["unique_id"] = "basementfridge_battery";
+  batteryDoc["value_template"] = "{{ value_json.voltage }}";
+  batteryDoc["unit_of_measurement"] = "V";
+  char batteryJsonBuffer[256];
+  serializeJson(batteryDoc, batteryJsonBuffer);
+  mqtt.publish(mqtt_battery_discovery_topic, batteryJsonBuffer);
 }
