@@ -112,10 +112,10 @@ void setup() {
   // turn off LED to indicate setup complete
   digitalWrite(LED, HIGH);
 
-  // deep sleep for 5 mins
+  // deep sleep for 15 mins
   Serial.println("Setup complete, going to sleep for 30 mins...");
   delay(1000);
-  esp_sleep_enable_timer_wakeup(60 * 30 * 1000000); // 30 mins
+  esp_sleep_enable_timer_wakeup(60 * 15 * 1000000); // 15 mins
   esp_deep_sleep_start();
   // Note: The ESP32 will reset after waking up from deep sleep
   // and the setup() function will be called again.
